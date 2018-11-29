@@ -1,16 +1,38 @@
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
-export default class App extends Component {
+import PlaceInput from './src/components/PlaceInput/PlaceInput';
+import PlaceList from './src/components/PlaceList/PlaceList';
+
+class App extends Component {
   state = {
-    placeName: ''
+    places: []
+  }
+
+  placeAddedHandler = placeName => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.concat({key: Math.random(), value: placeName})
+      }
+    });
+  };
+
+  placeDeletedHandler = key => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.filter(place => {
+          return place.key !== key;
+        })
+      };
+    })
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput value={this.state.placeName}/>
+        <PlaceInput onPlaceAdded={this.placeAddedHandler}/>
+        <PlaceList places={this.state.places} onItemDeleted={this.placeDeletedHandler}/>
       </View>
     );
   }
@@ -19,8 +41,11 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    padding: 29,
+    backgroundColor: 'white',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: 'flex-start'
   }
 });
+
+export default App;
